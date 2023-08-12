@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ayabot"
+version = "0.1.0"
+description = ""
+authors = ["SEAFHMC <d1366160279@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+httpx = "^0.24.1"
+nonebot-adapter-kaiheila = "^0.2.8"
+nb-cli = "^1.2.2"
+websockets = "^11.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "pypi-tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
