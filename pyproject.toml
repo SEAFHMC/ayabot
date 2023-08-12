@@ -12,6 +12,7 @@ nonebot-adapter-kaiheila = "^0.2.8"
 nb-cli = "^1.2.2"
 websockets = "^11.0.3"
 black = "^23.7.0"
+openai = "^0.27.8"
 
 
 [build-system]
