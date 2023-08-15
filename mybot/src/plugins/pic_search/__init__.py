@@ -17,7 +17,8 @@ pic_search = on_command("搜图")
 
 
 @pic_search.handle()
-async def _(matcher: Matcher, arg: Message = CommandArg()):
+async def _(matcher: Matcher, state: T_State, arg: Message = CommandArg()):
+    state["search_mode"] = "saucenao"
     if arg.extract_plain_text():
         matcher.set_arg("msg_recv", arg)
 
