@@ -33,7 +33,7 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
         if arg_plain_text not in ["saucenao", "anime", "a2d"]:
             await pic_search.reject("参数不支持")
         state["search_mode"] = arg_plain_text
-        await pic_search.reject(f"已进入{arg_plain_text}搜图模式")
+        return
     # 图片参数处理
     elif msg_recv[0].type == "image":
         file_key = msg_recv[0].data["file_key"]
