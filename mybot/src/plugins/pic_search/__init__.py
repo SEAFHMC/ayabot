@@ -39,9 +39,21 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
         file_key = msg_recv[0].data["file_key"]
         if state["search_mode"] == "saucenao":
             resp = await SauceNao.get_resp(img_url=file_key, api_key=plugin_config.saucenao_key)  # type: ignore
-            await pic_search.reject(
+            await pic_search.send(
                 MessageSegment.Card(SauceNao.generate_card(resp=resp))
             )
+            if resp.raw[0].similarity < 60:
+                await pic_search.send(
+                    f"相似度 {resp.raw[0].similarity}% 过低，如果这不是你要找的图，那么可能：确实找不到此图/图为原图的局部图/图清晰度太低/搜索引擎尚未同步新图\n自动使用 ascii2d 进行搜索"
+                )
+                resps = await Ascii2d.get_resp(image_url=file_key)
+                await pic_search.send(
+                    MessageSegment.Card(Ascii2d.norlmal_card(resp=resps[0]))
+                )
+                await pic_search.reject(
+                    MessageSegment.Card(Ascii2d.bovm_card(resp=resps[1]))
+                )
+            await pic_search.reject()
         if state["search_mode"] == "a2d":
             resps = await Ascii2d.get_resp(image_url=file_key)
             await pic_search.send(
