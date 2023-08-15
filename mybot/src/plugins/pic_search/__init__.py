@@ -1,10 +1,16 @@
+import nonebot
+
 from nonebot.plugin import on_command
-from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, Arg
-from nonebot.adapters.kaiheila.message import Message
+from nonebot.adapters.kaiheila.message import Message, MessageSegment
 
+from .SauceNao import SauceNao
+from .config import Config, ConfigError
 
+plugin_config = Config.parse_obj(nonebot.get_driver().config.dict())
+if not plugin_config.saucenao_key:
+    raise ConfigError("请设置 saucenao_key")
 pic_search = on_command("搜图")
 
 
@@ -22,12 +28,12 @@ async def got_arg(msg_recv: Message = Arg()):
             await pic_search.finish("已退出搜图")
         if msg_recv.extract_plain_text() not in ["anime", "a2d"]:
             await pic_search.reject("参数不支持")
-        logger.success(f"使用{msg_recv}搜图模式")
-        await pic_search.finish()
+        await pic_search.finish(f"已进入{msg_recv}搜图模式")
     # 图片参数处理
     elif msg_recv[0].type == "image":
         file_key = msg_recv[0].data["file_key"]
-        return
+        resp = await SauceNao.get_resp(img_url=file_key, api_key=plugin_config.saucenao_key)  # type: ignore
+        await pic_search.finish(MessageSegment.Card(SauceNao.generate_card(resp=resp)))
     # Default
     else:
         await pic_search.finish("参数不支持")
