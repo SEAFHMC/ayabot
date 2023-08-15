@@ -2,7 +2,7 @@ from typing import Optional
 from PicImageSearch.model import SauceNAOResponse
 from PicImageSearch import Network, SauceNAO
 
-from utils import CardMessage
+from utils.CardMessage import CardMessage
 
 
 class SauceNao:
