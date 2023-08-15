@@ -7,6 +7,7 @@ from nonebot.params import CommandArg, Arg
 from nonebot.adapters.kaiheila.message import Message, MessageSegment
 
 from .SauceNao import SauceNao
+from .Ascii2d import Ascii2d
 from .config import Config, ConfigError
 
 plugin_config = Config.parse_obj(nonebot.get_driver().config.dict())
@@ -40,6 +41,14 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
             resp = await SauceNao.get_resp(img_url=file_key, api_key=plugin_config.saucenao_key)  # type: ignore
             await pic_search.finish(
                 MessageSegment.Card(SauceNao.generate_card(resp=resp))
+            )
+        if state["search_mode"] == "a2d":
+            resps = await Ascii2d.get_resp(image_url=file_key)
+            await pic_search.send(
+                MessageSegment.Card(Ascii2d.norlmal_card(resp=resps[0]))
+            )
+            await pic_search.finish(
+                MessageSegment.Card(Ascii2d.bovm_card(resp=resps[1]))
             )
     # Default
     else:

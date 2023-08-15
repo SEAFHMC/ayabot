@@ -1,8 +1,9 @@
-from loguru import logger
 from typing import Optional
 from PicImageSearch import Ascii2D, Network
-from PicImageSearch.model import Ascii2DResponse
+from PicImageSearch.model import Ascii2DItem
+
 from utils.CardMessage import CardMessage
+
 
 class Ascii2d:
     @staticmethod
@@ -14,18 +15,30 @@ class Ascii2d:
             ascii2d_bovm = Ascii2D(client=client, bovw=True)
             resp_nomal = await ascii2d_normal.search(url=image_url)
             resp_bovm = await ascii2d_bovm.search(url=image_url)
-            return {"normal": resp_nomal, "bovm": resp_bovm}
+            selected_normal = next(
+                (i for i in resp_nomal.raw if i.title or i.url_list), resp_nomal.raw[0]
+            )
+            selected_bovm = next(
+                (i for i in resp_bovm.raw if i.title or i.url_list), resp_bovm.raw[0]
+            )
+            return [selected_normal, selected_bovm]
 
     @staticmethod
-    def generate_card(resp: Ascii2DResponse):
-        pass
+    def norlmal_card(resp: Ascii2DItem):
+        new_card = CardMessage()
+        new_card.add_plain_text("Ascii2dse色合搜索:")
+        new_card.add_plain_text(f"{resp.title} / {resp.author}")
+        new_card.add_image(resp.thumbnail)
+        new_card.add_kmarkdown(f"url: [{resp.url}]({resp.url})")
+        new_card.add_kmarkdown(f"author: [{resp.author_url}]({resp.author_url})")
+        return new_card.card
 
-
-def show_result(resp: Ascii2DResponse) -> None:
-    selected = next((i for i in resp.raw if i.title or i.url_list), resp.raw[0])
-    logger.info(selected.thumbnail)
-    logger.info(selected.title)
-    logger.info(selected.author)
-    logger.info(selected.author_url)
-    logger.info(selected.url)
-    logger.info("-" * 50)
+    @staticmethod
+    def bovm_card(resp: Ascii2DItem):
+        new_card = CardMessage()
+        new_card.add_plain_text("Ascii2dse特征搜索:")
+        new_card.add_plain_text(f"{resp.title} / {resp.author}")
+        new_card.add_image(resp.thumbnail)
+        new_card.add_kmarkdown(f"url: [{resp.url}]({resp.url})")
+        new_card.add_kmarkdown(f"author: [{resp.author_url}]({resp.author_url})")
+        return new_card.card
