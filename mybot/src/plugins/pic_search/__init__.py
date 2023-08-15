@@ -39,7 +39,7 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
         file_key = msg_recv[0].data["file_key"]
         if state["search_mode"] == "saucenao":
             resp = await SauceNao.get_resp(img_url=file_key, api_key=plugin_config.saucenao_key)  # type: ignore
-            await pic_search.finish(
+            await pic_search.reject(
                 MessageSegment.Card(SauceNao.generate_card(resp=resp))
             )
         if state["search_mode"] == "a2d":
@@ -47,9 +47,9 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
             await pic_search.send(
                 MessageSegment.Card(Ascii2d.norlmal_card(resp=resps[0]))
             )
-            await pic_search.finish(
+            await pic_search.reject(
                 MessageSegment.Card(Ascii2d.bovm_card(resp=resps[1]))
             )
     # Default
     else:
-        await pic_search.finish("参数不支持")
+        await pic_search.reject("参数不支持")
