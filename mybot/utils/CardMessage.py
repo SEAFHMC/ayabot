@@ -21,7 +21,10 @@ class CardMessage:
             {"type": "section", "text": {"type": "kmarkdown", "content": content}}
         )
 
-    def add_image(self, file_key: str):
+    def add_image(self, src: str):
         self.modules.append(
-            {"type": "container", "elements": [{"type": "image", "src": file_key}]}
+            {"type": "container", "elements": [{"type": "image", "src": src}]}
         )
+
+    def add_video(self, title: str, src: str):
+        self.modules.append({"type": "video", "title": title, "src": src})

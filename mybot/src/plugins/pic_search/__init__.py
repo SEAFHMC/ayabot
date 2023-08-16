@@ -8,6 +8,7 @@ from nonebot.adapters.kaiheila.message import Message, MessageSegment
 
 from .SauceNao import SauceNao
 from .Ascii2d import Ascii2d
+from .Tracemoe import Tracemoe
 from .config import Config, ConfigError
 
 plugin_config = Config.parse_obj(nonebot.get_driver().config.dict())
@@ -37,6 +38,7 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
     # 图片参数处理
     elif msg_recv[0].type == "image":
         file_key = msg_recv[0].data["file_key"]
+        # SauceNao
         if state["search_mode"] == "saucenao":
             resp = await SauceNao.get_resp(img_url=file_key, api_key=plugin_config.saucenao_key)  # type: ignore
             await pic_search.send(
@@ -54,6 +56,7 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
                     MessageSegment.Card(Ascii2d.bovm_card(resp=resps[1]))
                 )
             await pic_search.reject()
+        # Ascii2d
         if state["search_mode"] == "a2d":
             resps = await Ascii2d.get_resp(image_url=file_key)
             await pic_search.send(
@@ -61,6 +64,12 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
             )
             await pic_search.reject(
                 MessageSegment.Card(Ascii2d.bovm_card(resp=resps[1]))
+            )
+        # Anime
+        if state["search_mode"] == "anime":
+            resp = await Tracemoe.get_resp(img_url=file_key)
+            await pic_search.reject(
+                MessageSegment.Card(Tracemoe.generate_card(resp=resp))
             )
     # Default
     else:
