@@ -42,4 +42,4 @@ class Tracemoe:
             f"进度: {convert_to_time_format(resp.raw[0].From)}-{convert_to_time_format(resp.raw[0].To)}"
         )
         new_card.add_video(title=resp.raw[0].filename, src=resp.raw[0].video)
-        return new_card
+        return new_card.card
