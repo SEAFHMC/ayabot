@@ -24,17 +24,17 @@ async def _(matcher: Matcher, state: T_State, arg: Message = CommandArg()):
         matcher.set_arg("msg_recv", arg)
 
 
-@pic_search.got("msg_recv", prompt="请发送一张图片或者搜图模式")
+@pic_search.got("msg_recv", prompt="了解～请发送图片吧！支持批量噢！\n如想退出搜索模式请发送“谢谢文文”")
 async def got_arg(state: T_State, msg_recv: Message = Arg()):
     # 文字参数处理
     if msg_recv[0].type == "text":
         arg_plain_text = msg_recv.extract_plain_text()
-        if arg_plain_text == "退出":
-            await pic_search.finish("已退出搜图")
+        if arg_plain_text == "谢谢文文":
+            await pic_search.finish("にゃ～")
         if arg_plain_text not in ["saucenao", "anime", "a2d"]:
-            await pic_search.reject("参数不支持")
+            await pic_search.reject("必须要发送图片我才能帮你找噢_(:3」」\n支持批量！")
         state["search_mode"] = arg_plain_text
-        await pic_search.reject(f"已进入{arg_plain_text}搜图模式")
+        await pic_search.reject(f"了解～已进入{arg_plain_text}搜图模式")
     # 图片参数处理
     elif msg_recv[0].type == "image":
         file_key = msg_recv[0].data["file_key"]
@@ -73,4 +73,4 @@ async def got_arg(state: T_State, msg_recv: Message = Arg()):
             )
     # Default
     else:
-        await pic_search.reject("参数不支持")
+        await pic_search.reject("必须要发送图片我才能帮你找噢_(:3」」\n支持批量！")
