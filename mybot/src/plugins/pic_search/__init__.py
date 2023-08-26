@@ -1,7 +1,7 @@
 import nonebot
 
 from nonebot.typing import T_State
-from nonebot.plugin import on_fullmatch
+from nonebot.plugin import on_command
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, Arg
 from nonebot.adapters.kaiheila.message import Message, MessageSegment
@@ -14,7 +14,7 @@ from .config import Config, ConfigError
 plugin_config = Config.parse_obj(nonebot.get_driver().config.dict())
 if not plugin_config.saucenao_key:
     raise ConfigError("请设置 saucenao_key")
-pic_search = on_fullmatch("文文搜图")
+pic_search = on_command("搜图")
 
 
 @pic_search.handle()
